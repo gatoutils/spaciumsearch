@@ -176,6 +176,30 @@
             height: 25px;
             cursor: pointer;
         }
+        .shortcut-container {
+            margin-top: 20px;
+        }
+        .shortcut {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .shortcut img, .shortcut i {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .delete-button {
+            font-size: 16px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -211,11 +235,9 @@
 
     <div id="shortcut-form">
         <h2>Crear Acceso Directo</h2>
-        <label for="shortcut-icon">Icono del Acceso Directo:</label>
-        <input type="text" id="shortcut-icon" placeholder="Escribe el nombre del icono">
         <label for="shortcut-url">URL del Acceso Directo: (Añadir https://)</label>
         <input type="url" id="shortcut-url" placeholder="Escribe la URL del acceso directo">
-        <label for="shortcut-file">Adjuntar Archivo:</label>
+        <label for="shortcut-file">Adjuntar Imagen:</label>
         <input type="file" id="shortcut-file">
         <button onclick="saveShortcut()">Guardar</button>
     </div>
@@ -224,6 +246,7 @@
         <h2>Tu Rincón</h2>
         <button onclick="toggleAlarmForm()">Crear Alarma</button>
         <div id="alarm-form">
+            <h2>Crear Alarma</h2>
             <label for="alarm-time">Hora y Minuto (hh:mm):</label>
             <input type="text" id="alarm-time" placeholder="Ejemplo: 07:30">
             <label for="alarm-title">Título:</label>
@@ -232,8 +255,9 @@
         </div>
     </div>
 
-    <div id="shortcut-container">
+    <div class="shortcut-container">
         <h2>Accesos Directos</h2>
+        <div id="shortcut-list"></div>
     </div>
 
     <script>
@@ -289,69 +313,59 @@
 
         // Función para guardar el acceso directo creado
         function saveShortcut() {
-            var shortcutIcon = document.getElementById('shortcut-icon').value;
             var shortcutUrl = document.getElementById('shortcut-url').value;
             var shortcutFile = document.getElementById('shortcut-file').files[0];
-            createShortcutButton(shortcutIcon, shortcutUrl, shortcutFile);
+            createShortcutButton(shortcutUrl, shortcutFile);
             toggleShortcutForm(); // Ocultar el formulario después de guardar
-            saveBookmarks();
         }
 
         // Función para crear un botón de acceso directo
-        function createShortcutButton(icon, url, file) {
-            var shortcutContainer = document.getElementById('shortcut-container');
+        function createShortcutButton(url, file) {
+            var shortcutContainer = document.getElementById('shortcut-list');
+            var shortcutDiv = document.createElement('div');
+            shortcutDiv.classList.add('shortcut');
             var button = document.createElement('button');
-            var iconHTML;
             if (file) {
                 var reader = new FileReader();
                 reader.onload = function(event) {
-                    iconHTML = '<img src="' + event.target.result + '" alt="Icono" width="50" height="50">';
-                    button.innerHTML = iconHTML;
+                    var img = document.createElement('img');
+                    img.src = event.target.result;
+                    button.appendChild(img);
                 };
                 reader.readAsDataURL(file);
             } else {
-                iconHTML = icon ? '<i class="' + icon + '"></i>' : '';
-                button.innerHTML = iconHTML;
+                button.textContent = "Acceso Directo";
             }
             button.onclick = function() {
                 window.open(url, '_blank', 'width=800,height=600');
             };
-            shortcutContainer.appendChild(button);
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = "Eliminar";
+            deleteButton.classList.add('delete-button');
+            deleteButton.onclick = function() {
+                shortcutContainer.removeChild(shortcutDiv);
+            };
+            shortcutDiv.appendChild(button);
+            shortcutDiv.appendChild(deleteButton);
+            shortcutContainer.appendChild(shortcutDiv);
         }
 
-        // Guardar los marcadores en las cookies
-        function saveBookmarks() {
-            var bookmarks = [];
-            var shortcutButtons = document.querySelectorAll('#shortcut-container button');
-            shortcutButtons.forEach(function(button) {
-                var bookmark = {};
-                if (button.innerHTML.includes('img')) {
-                    bookmark.icon = button.querySelector('img').src;
-                } else {
-                    bookmark.icon = button.querySelector('i').className;
-                }
-                bookmark.url = button.onclick.toString().split("'")[1];
-                bookmarks.push(bookmark);
-            });
-            document.cookie = 'bookmarks=' + JSON.stringify(bookmarks);
-        }
-
-        // Cargar los marcadores guardados en las cookies
-        function loadBookmarks() {
+        // Función para cargar los accesos directos guardados
+        function loadShortcuts() {
             var cookies = document.cookie.split(';');
             for (var i = 0; i < cookies.length; i++) {
                 var cookie = cookies[i].trim();
-                if (cookie.startsWith('bookmarks=')) {
-                    var bookmarks = JSON.parse(cookie.substring('bookmarks='.length));
-                    bookmarks.forEach(function(bookmark) {
-                        createShortcutButton(bookmark.icon, bookmark.url);
+                if (cookie.startsWith('shortcuts=')) {
+                    var shortcuts = JSON.parse(cookie.substring('shortcuts='.length));
+                    shortcuts.forEach(function(shortcut) {
+                        createShortcutButton(shortcut.url, null);
                     });
                 }
             }
         }
 
-        // Cargar los marcadores al cargar la página
-        loadBookmarks();
+        // Cargar los accesos directos al cargar la página
+        loadShortcuts();
 
         // Función para mostrar/ocultar el formulario de crear alarma
         function toggleAlarmForm() {
