@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navegador para Gamers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Black Ops One', cursive;
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            color: white;
+            text-align: center;
+            background-size: cover;
+        }
+        #title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #title-img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        #search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #search-input {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #777;
+            border-radius: 5px;
+            outline: none;
+        }
+        #search-button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #separator {
+            height: 5px;
+            background: linear-gradient(to right, #ff00cc, #3333ff, #00ffcc);
+            margin-top: 40px;
+        }
+        #icons-container {
+            display: flex;
+            justify-content: space-evenly;
+            padding: 20px 0;
+        }
+        .icon {
+            font-size: 30px;
+            cursor: pointer;
+        }
+        #settings-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 9999;
+        }
+        #settings-container h2 {
+            text-align: center;
+        }
+        #settings-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .setting {
+            margin-bottom: 10px;
+        }
+        .setting label {
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        #settings-button, #save-button {
+            font-family: 'Black Ops One', cursive;
+            font-size: 20px;
+            background-color: #00ffcc;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            z-index: 9999;
+        }
+        #settings-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+        #save-button {
+            margin-top: 20px;
+        }
+        #shortcut-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 9999;
+        }
+        #shortcut-form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        #shortcut-form input[type="text"], #shortcut-form input[type="url"], #shortcut-form input[type="file"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #777;
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #shortcut-form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .shortcut-button {
+            font-size: 30px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        #your-corner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #alarm-form {
+            display: none;
+            margin-top: 20px;
+        }
+        .alarm-iframe {
+            margin-top: 20px;
+            position: relative;
+        }
+        .close-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="title-container">
+        <img id="title-img" src="https://yt3.ggpht.com/f984ALLrcZSgF2eWdPYmmeAA1tWGM3Oyyf0_yGMwf4pD0JZrsOUN2CKu-iNTp04fbtlQ62b4rw=s88-c-k-c0x00ffffff-no-rj" alt="Título de la página">
+        <h1>Spacium Search</h1>
+    </div>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="Buscar...">
+        <button id="search-button">Buscar</button>
+    </div>
+    <div id="separator"></div>
+    <div id="icons-container">
+        <i class="fab fa-instagram icon" onclick="openWindow('https://instagram.com')"></i>
+        <i class="fab fa-discord icon" onclick="openWindow('https://discord.com')"></i>
+        <i class="fab fa-twitter icon" onclick="openWindow('https://twitter.com')"></i>
+        <i class="fas fa-robot icon" onclick="openWindow('https://chat.openai.com')"></i>
+    </div>
+    <button id="settings-button" onclick="toggleSettings()">Ajustes</button>
+
+    <div id="settings-container">
+        <h2>Ajustes</h2>
+        <form id="settings-form">
+            <div class="setting">
+                <label for="bg-image">Imagen de Fondo:</label>
+                <input type="file" id="bg-image">
+            </div>
+            <button id="save-button" type="button" onclick="saveSettings()">Guardar</button>
+        </form>
+    </div>
+
+    <button id="shortcut-button" class="shortcut-button" onclick="toggleShortcutForm()"><i class="fas fa-plus"></i></button>
+
+    <div id="shortcut-form">
+        <h2>Crear Acceso Directo</h2>
+        <label for="shortcut-icon">Icono del Acceso Directo:</label>
+        <input type="text" id="shortcut-icon" placeholder="Escribe el nombre del icono">
+        <label for="shortcut-url">URL del Acceso Directo: (Añadir https://)</label>
+        <input type="url" id="shortcut-url" placeholder="Escribe la URL del acceso directo">
+        <label for="shortcut-file">Adjuntar Archivo:</label>
+        <input type="file" id="shortcut-file">
+        <button onclick="saveShortcut()">Guardar</button>
+    </div>
+
+    <div id="your-corner-container">
+        <h2>Tu Rincón</h2>
+        <button onclick="toggleAlarmForm()">Crear Alarma</button>
+        <div id="alarm-form">
+            <label for="alarm-time">Hora y Minuto (hh:mm):</label>
+            <input type="text" id="alarm-time" placeholder="Ejemplo: 07:30">
+            <label for="alarm-title">Título:</label>
+            <input type="text" id="alarm-title" placeholder="Escribe el título">
+            <button onclick="createAlarm()">Crear Alarma</button>
+        </div>
+    </div>
+
+    <div id="shortcut-container">
+        <h2>Accesos Directos</h2>
+    </div>
+
+    <script>
+        document.getElementById('search-button').addEventListener('click', function() {
+            var query = document.getElementById('search-input').value;
+            window.location.href = 'https://google.com/search?q=' + encodeURIComponent(query);
+        });
+
+        function openWindow(url) {
+            window.open(url, '_blank', 'width=800,height=600');
+        }
+
+        // Función para mostrar/ocultar el menú de ajustes
+        function toggleSettings() {
+            var settingsContainer = document.getElementById('settings-container');
+            settingsContainer.style.display = (settingsContainer.style.display === 'none') ? 'block' : 'none';
+        }
+
+        // Función para guardar los ajustes de fondo de pantalla
+        function saveSettings() {
+            var bgImage = document.getElementById('bg-image').files[0];
+            setBackgroundImage(bgImage);
+            toggleSettings(); // Ocultar el menú de ajustes después de guardar
+        }
+
+        // Función para establecer la imagen de fondo
+        function setBackgroundImage(image) {
+            if (image) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    document.body.style.backgroundImage = "url('" + event.target.result + "')";
+                };
+                reader.readAsDataURL(image);
+            } else {
+                document.body.style.backgroundImage = 'none';
+            }
+        }
+
+        // Verificar si hay una imagen de fondo guardada en las cookies
+        if (document.cookie) {
+            var savedBgImage = document.cookie.split(';').find(cookie => cookie.trim().startsWith('bgImage='));
+            if (savedBgImage) {
+                var bgImagePath = savedBgImage.split('=')[1];
+                setBackgroundImage(bgImagePath);
+            }
+        }
+
+        // Función para mostrar/ocultar el formulario de crear acceso directo
+        function toggleShortcutForm() {
+            var shortcutForm = document.getElementById('shortcut-form');
+            shortcutForm.style.display = (shortcutForm.style.display === 'none') ? 'block' : 'none';
+        }
+
+        // Función para guardar el acceso directo creado
+        function saveShortcut() {
+            var shortcutIcon = document.getElementById('shortcut-icon').value;
+            var shortcutUrl = document.getElementById('shortcut-url').value;
+            var shortcutFile = document.getElementById('shortcut-file').files[0];
+            createShortcutButton(shortcutIcon, shortcutUrl, shortcutFile);
+            toggleShortcutForm(); // Ocultar el formulario después de guardar
+            saveBookmarks();
+        }
+
+        // Función para crear un botón de acceso directo
+        function createShortcutButton(icon, url, file) {
+            var shortcutContainer = document.getElementById('shortcut-container');
+            var button = document.createElement('button');
+            var iconHTML;
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    iconHTML = '<img src="' + event.target.result + '" alt="Icono" width="50" height="50">';
+                    button.innerHTML = iconHTML;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                iconHTML = icon ? '<i class="' + icon + '"></i>' : '';
+                button.innerHTML = iconHTML;
+            }
+            button.onclick = function() {
+                window.open(url, '_blank', 'width=800,height=600');
+            };
+            shortcutContainer.appendChild(button);
+        }
+
+        // Guardar los marcadores en las cookies
+        function saveBookmarks() {
+            var bookmarks = [];
+            var shortcutButtons = document.querySelectorAll('#shortcut-container button');
+            shortcutButtons.forEach(function(button) {
+                var bookmark = {};
+                if (button.innerHTML.includes('img')) {
+                    bookmark.icon = button.querySelector('img').src;
+                } else {
+                    bookmark.icon = button.querySelector('i').className;
+                }
+                bookmark.url = button.onclick.toString().split("'")[1];
+                bookmarks.push(bookmark);
+            });
+            document.cookie = 'bookmarks=' + JSON.stringify(bookmarks);
+        }
+
+        // Cargar los marcadores guardados en las cookies
+        function loadBookmarks() {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.startsWith('bookmarks=')) {
+                    var bookmarks = JSON.parse(cookie.substring('bookmarks='.length));
+                    bookmarks.forEach(function(bookmark) {
+                        createShortcutButton(bookmark.icon, bookmark.url);
+                    });
+                }
+            }
+        }
+
+        // Cargar los marcadores al cargar la página
+        loadBookmarks();
+
+        // Función para mostrar/ocultar el formulario de crear alarma
+        function toggleAlarmForm() {
+            var alarmForm = document.getElementById('alarm-form');
+            alarmForm.style.display = (alarmForm.style.display === 'none') ? 'block' : 'none';
+        }
+
+        // Función para crear una alarma
+        function createAlarm() {
+            var time = document.getElementById('alarm-time').value;
+            var title = document.getElementById('alarm-title').value;
+            var iframeCode = '<div class="alarm-iframe"><button class="close-button" onclick="closeAlarm(this)">X</button><iframe width="475" height="250" src="https://reloj-alarma.es/embed/#time=' + time + '&title=' + title + '&digital=0&theme=0&ampm=0&showdate=1&sound=classic" frameborder="0" allowfullscreen></iframe></div>';
+            var yourCornerContainer = document.getElementById('your-corner-container');
+            var alarmElement = document.createElement('div');
+            alarmElement.innerHTML = iframeCode;
+            yourCornerContainer.appendChild(alarmElement);
+            toggleAlarmForm(); // Ocultar el formulario después de crear la alarma
+        }
+
+        // Función para cerrar la alarma
+        function closeAlarm(button) {
+            var alarmIframe = button.parentNode;
+            alarmIframe.parentNode.removeChild(alarmIframe);
+        }
+    </script>
+</body>
+</html>
