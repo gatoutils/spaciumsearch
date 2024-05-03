@@ -125,6 +125,7 @@
         #shortcut-form label {
             display: block;
             margin-bottom: 10px;
+            color: white;
         }
         #shortcut-form input[type="text"], #shortcut-form input[type="url"], #shortcut-form input[type="file"] {
             padding: 10px;
@@ -156,25 +157,48 @@
             align-items: center;
             margin-top: 20px;
         }
-        #alarm-form {
+        .alarm-form {
             display: none;
             margin-top: 20px;
         }
-        .alarm-iframe {
-            margin-top: 20px;
-            position: relative;
+        .alarm-form label {
+            display: block;
+            margin-bottom: 10px;
+            color: white;
         }
-        .close-button {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #ff0000;
+        .alarm-form input[type="text"],.alarm-form input[type="time"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #777;
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .alarm-form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            border-radius: 5px;
             cursor: pointer;
+        }
+        .open-alarm-form-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .alarm-form button.close-alarm-form-button {
+            margin-top: 20px;
+        }
+        .alarm-form button.open-alarm-form-button {
+            margin-top: 20px;
         }
         .shortcut-container {
             margin-top: 20px;
@@ -244,15 +268,16 @@
 
     <div id="your-corner-container">
         <h2>Tu Rincón</h2>
-        <button onclick="toggleAlarmForm()">Crear Alarma</button>
-        <div id="alarm-form">
+        <button class="open-alarm-form-button" onclick="toggleAlarmForm()">Crear Alarma</button>
+        <form class="alarm-form" id="alarm-form">
             <h2>Crear Alarma</h2>
             <label for="alarm-time">Hora y Minuto (hh:mm):</label>
-            <input type="text" id="alarm-time" placeholder="Ejemplo: 07:30">
+            <input type="time" id="alarm-time" placeholder="Ejemplo: 07:30">
             <label for="alarm-title">Título:</label>
             <input type="text" id="alarm-title" placeholder="Escribe el título">
             <button onclick="createAlarm()">Crear Alarma</button>
-        </div>
+            <button class="close-alarm-form-button" onclick="toggleAlarmForm()">Cancelar</button>
+        </form>
     </div>
 
     <div class="shortcut-container">
@@ -377,6 +402,10 @@
         function createAlarm() {
             var time = document.getElementById('alarm-time').value;
             var title = document.getElementById('alarm-title').value;
+            if (time === "") {
+                alert("¡Debes poner una hora!");
+                return;
+            }
             var iframeCode = '<div class="alarm-iframe"><button class="close-button" onclick="closeAlarm(this)">X</button><iframe width="475" height="250" src="https://reloj-alarma.es/embed/#time=' + time + '&title=' + title + '&digital=0&theme=0&ampm=0&showdate=1&sound=classic" frameborder="0" allowfullscreen></iframe></div>';
             var yourCornerContainer = document.getElementById('your-corner-container');
             var alarmElement = document.createElement('div');
